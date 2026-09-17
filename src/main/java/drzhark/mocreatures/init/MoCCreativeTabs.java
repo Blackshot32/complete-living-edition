@@ -36,8 +36,13 @@ public class MoCCreativeTabs {
                                     .ifPresent(itemObj -> output.accept(itemObj.get()));
                         }
                         
-                        // Add standalone items (not block items)
+                        // Add standalone items (filtered to remove orphaned drops from pruned animals)
                         for (var itemEntry : MoCItems.ITEMS.getEntries()) {
+                            String itemPath = itemEntry.getId().getPath();
+                            if (!MoCEntityFilter.isItemAllowed(itemPath)) {
+                                continue;
+                            }
+
                             Item item = itemEntry.get();
 
                             // Special handling for the horse guide item to add the display stack

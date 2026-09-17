@@ -900,7 +900,14 @@ public class MoCEntityWyvern extends MoCEntityTameableAnimal {
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {
-        return !stack.isEmpty() && (stack.getItem() == MoCItems.RAT_RAW.get() || stack.getItem() == MoCItems.RAW_TURKEY.get());
+        return !stack.isEmpty() && (stack.getItem() == MoCItems.RAT_RAW.get() 
+                || stack.getItem() == MoCItems.RAW_TURKEY.get()
+                || stack.is(Items.BEEF)
+                || stack.is(Items.CHICKEN)
+                || stack.is(Items.PORKCHOP)
+                || stack.is(Items.MUTTON)
+                || stack.is(Items.RABBIT)
+                || stack.is(net.minecraft.tags.ItemTags.MEAT));
     }
 
     private void openMouth() {

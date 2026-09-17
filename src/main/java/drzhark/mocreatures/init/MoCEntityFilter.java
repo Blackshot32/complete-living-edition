@@ -17,6 +17,7 @@ public class MoCEntityFilter {
     public static boolean enableRedundantAnimals = false;
 
     private static final Set<String> REDUNDANT_ENTITIES = new HashSet<>();
+    private static final Set<String> REDUNDANT_ITEMS = new HashSet<>();
 
     static {
         // Redundant Bears (Naturalist and Alex's Mobs have superior models, fishing, and sleeping)
@@ -37,7 +38,8 @@ public class MoCEntityFilter {
                 "goat",
                 "fox",
                 "kitty",
-                "mouse"
+                "mouse",
+                "turkey"
         );
 
         // Redundant Reptiles & Amphibians
@@ -70,6 +72,32 @@ public class MoCEntityFilter {
                 "smallfish", "small_fish",
                 "mediumfish", "medium_fish"
         );
+
+        // Orphaned / Redundant Items belonging to pruned animals
+        Collections.addAll(REDUNDANT_ITEMS,
+                "turkeycooked", "turkeyraw",
+                "duckcooked", "duckraw",
+                "turtleraw", "turtlecooked", "turtlesoup",
+                "venisonraw", "venisoncooked",
+                "kittylitter", "woolball",
+                "furhelmet", "furchest", "furlegs", "furboots"
+        );
+        String[] colors = {"white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray",
+                "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"};
+        for (String c : colors) {
+            REDUNDANT_ITEMS.add("kittybed_" + c);
+        }
+    }
+
+    public static boolean isItemAllowed(String itemPath) {
+        if (enableRedundantAnimals) {
+            return true;
+        }
+        if (itemPath == null) {
+            return true;
+        }
+        String normalized = itemPath.toLowerCase().replace("mocreatures:", "");
+        return !REDUNDANT_ITEMS.contains(normalized);
     }
 
     public static boolean isRedundant(String entityName) {

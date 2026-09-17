@@ -23,6 +23,7 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.SaddleItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -307,7 +308,15 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal implements HuntingA
 
     @Override
     public boolean isMyHealFood(ItemStack stack) {
-        return !stack.isEmpty() && (stack.getItem() == MoCItems.RAT_RAW.get() || stack.getItem() == MoCItems.RAW_TURKEY.get());
+        return !stack.isEmpty() && (stack.getItem() == MoCItems.RAT_RAW.get() 
+                || stack.getItem() == MoCItems.RAW_TURKEY.get()
+                || stack.is(Items.BEEF)
+                || stack.is(Items.CHICKEN)
+                || stack.is(Items.PORKCHOP)
+                || stack.is(Items.MUTTON)
+                || stack.is(Items.RABBIT)
+                || stack.is(Items.ROTTEN_FLESH)
+                || stack.is(net.minecraft.tags.ItemTags.MEAT));
     }
 
     @Override
