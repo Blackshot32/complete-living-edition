@@ -23,12 +23,12 @@ public class MoCEntityFilter {
     /**
      * Active filter mode. Default is AUTO.
      */
-    public static FilterMode filterMode = FilterMode.AUTO;
+    public static FilterMode filterMode = FilterMode.NEVER_PRUNE;
 
     /**
      * Legacy backward-compatibility flag. If set to true, forces NEVER_PRUNE.
      */
-    public static boolean enableRedundantAnimals = false;
+    public static boolean enableRedundantAnimals = true;
 
     private static boolean loggedStatus = false;
 

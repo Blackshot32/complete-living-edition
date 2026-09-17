@@ -750,12 +750,12 @@ public class MoCProxy {
         this.wyvernEggDropChance = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "WyvernEggDropChance", 5, "Percentage chance of a wyvern to drop an egg when killed.").getInt(5);
         this.wyvernDimension = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse("mocreatures:wyvernlairworld"));
 
-        String filterModeStr = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "EcosystemFilterMode", "AUTO",
+        String filterModeStr = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "EcosystemFilterMode", "NEVER_PRUNE",
                 "Filter mode for redundant mundane animals (deer, bears, etc.) overlapping with Naturalist or Alex's Mobs. Options: AUTO (detects installed mods), ALWAYS_PRUNE, NEVER_PRUNE").getString();
         try {
             drzhark.mocreatures.init.MoCEntityFilter.filterMode = drzhark.mocreatures.init.MoCEntityFilter.FilterMode.valueOf(filterModeStr.toUpperCase());
         } catch (Exception e) {
-            drzhark.mocreatures.init.MoCEntityFilter.filterMode = drzhark.mocreatures.init.MoCEntityFilter.FilterMode.AUTO;
+            drzhark.mocreatures.init.MoCEntityFilter.filterMode = drzhark.mocreatures.init.MoCEntityFilter.FilterMode.NEVER_PRUNE;
         }
 
         // Custom ID settings
