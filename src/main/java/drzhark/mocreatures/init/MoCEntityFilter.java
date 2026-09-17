@@ -1,20 +1,36 @@
 package drzhark.mocreatures.init;
 
+import drzhark.mocreatures.MoCreatures;
+import net.neoforged.fml.ModList;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Filter to eliminate redundant mundane animals that overlap with Vanilla, Naturalist, and Alex's Mobs.
+ * Intelligent filter to eliminate redundant mundane animals that overlap with Vanilla, Naturalist, and Alex's Mobs.
  * Keeps all unique creatures, Big Cat hybrids, Elephants with Howdah, Ents, Ostriches,
  * unique aquatic/plague fauna, and ALL hostile/mythical/RPG monsters.
  */
 public class MoCEntityFilter {
 
+    public enum FilterMode {
+        AUTO,           // Automatically filters redundant animals if Naturalist or Alex's Mobs is present
+        ALWAYS_PRUNE,   // Always filters redundant animals (pure RPG mode)
+        NEVER_PRUNE     // Never filters (classic 2011 Mo' Creatures experience with all animals)
+    }
+
     /**
-     * Master configuration flag. When false, redundant animal spawns and eggs are disabled.
+     * Active filter mode. Default is AUTO.
+     */
+    public static FilterMode filterMode = FilterMode.AUTO;
+
+    /**
+     * Legacy backward-compatibility flag. If set to true, forces NEVER_PRUNE.
      */
     public static boolean enableRedundantAnimals = false;
+
+    private static boolean loggedStatus = false;
 
     private static final Set<String> REDUNDANT_ENTITIES = new HashSet<>();
     private static final Set<String> REDUNDANT_ITEMS = new HashSet<>();
@@ -89,8 +105,41 @@ public class MoCEntityFilter {
         }
     }
 
+    public static boolean isNaturalistLoaded() {
+        try {
+            return ModList.get() != null && ModList.get().isLoaded("naturalist");
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    public static boolean isAlexsMobsLoaded() {
+        try {
+            return ModList.get() != null && ModList.get().isLoaded("alexsmobs");
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    public static boolean isFilteringActive() {
+        if (enableRedundantAnimals || filterMode == FilterMode.NEVER_PRUNE) {
+            return false;
+        }
+        if (filterMode == FilterMode.ALWAYS_PRUNE) {
+            return true;
+        }
+        // AUTO mode: active if either ecosystem mod (Naturalist or Alex's Mobs) is present
+        boolean active = isNaturalistLoaded() || isAlexsMobsLoaded();
+        if (!loggedStatus) {
+            loggedStatus = true;
+            MoCreatures.LOGGER.info("[Mo' Creatures Ecosystem Detection] Naturalist loaded: {}, Alex's Mobs loaded: {}. Redundant fauna pruning: {}",
+                    isNaturalistLoaded(), isAlexsMobsLoaded(), active ? "ACTIVE (Auto-pruning duplicates)" : "INACTIVE (Preserving classic animals)");
+        }
+        return active;
+    }
+
     public static boolean isItemAllowed(String itemPath) {
-        if (enableRedundantAnimals) {
+        if (!isFilteringActive()) {
             return true;
         }
         if (itemPath == null) {
@@ -101,7 +150,7 @@ public class MoCEntityFilter {
     }
 
     public static boolean isRedundant(String entityName) {
-        if (enableRedundantAnimals) {
+        if (!isFilteringActive()) {
             return false;
         }
         if (entityName == null) {
