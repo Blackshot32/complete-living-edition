@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import drzhark.mocreatures.MoCreatures;
+import drzhark.mocreatures.init.MoCEntityFilter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -353,6 +354,9 @@ public class BiomeSpawnConfig {
     }
     
     public static boolean testBiome(String creatureName, Holder<Biome> biome, ResourceLocation biomeName) {
+        if (!MoCEntityFilter.shouldSpawn(creatureName)) {
+            return false;
+        }
         CreatureSpawnData data = getSpawnData(creatureName);
         return data != null && data.enabled && data.biomes.matches(biome, biomeName);
     }

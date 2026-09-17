@@ -56,8 +56,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import drzhark.mocreatures.network.MoCPacketDistributor;
 
-public class MoCEntityBigCat extends MoCEntityTameableAnimal {
+import drzhark.mocreatures.entity.ai.HuntingAnimal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 
+public class MoCEntityBigCat extends MoCEntityTameableAnimal implements HuntingAnimal {
+
+    private int huntingCooldown = 0;
     private static final EntityDataAccessor<Boolean> RIDEABLE = SynchedEntityData.defineId(MoCEntityBigCat.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HAS_AMULET = SynchedEntityData.defineId(MoCEntityBigCat.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SITTING = SynchedEntityData.defineId(MoCEntityBigCat.class, EntityDataSerializers.BOOLEAN);
@@ -95,8 +100,9 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(5, new EntityAIFollowOwnerPlayer(this, 1D, 2F, 10F));
         this.goalSelector.addGoal(2, new EntityAIWanderMoC2(this, 0.8D, 30));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        //this.targetSelector.addGoal(3, new EntityAIHunt<>(this, AnimalEntity.class, true));
-        this.targetSelector.addGoal(3, new EntityAIHunt<>(this, Player.class, false));
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, LivingEntity.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false,
+                player -> !getIsTamed() && !isBaby() && this.level().getDifficulty() != Difficulty.PEACEFUL));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -276,6 +282,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     @Override
     public void aiStep() {
         super.aiStep();
+        tickHuntingCooldown();
 
         if (!this.level().isClientSide()) {
             setSprinting(this.getTarget() != null);
@@ -355,6 +362,25 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     }
 
     @Override
+    public int getHuntingCooldown() {
+        return this.huntingCooldown;
+    }
+
+    @Override
+    public void setHuntingCooldown(int cooldown) {
+        this.huntingCooldown = cooldown;
+    }
+
+    @Override
+    public boolean doHurtTarget(net.minecraft.world.entity.Entity target) {
+        boolean hurt = super.doHurtTarget(target);
+        if (hurt && !(target instanceof Player)) {
+            startHuntingCooldown();
+        }
+        return hurt;
+    }
+
+    @Override
     public boolean readytoBreed() {
         return !this.getIsGhost() && super.readytoBreed();
     }
@@ -394,6 +420,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     @Override
     public void addAdditionalSaveData(CompoundTag nbttagcompound) {
         super.addAdditionalSaveData(nbttagcompound);
+        saveHuntingCooldown(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
         nbttagcompound.putBoolean("Sitting", getIsSitting());
         nbttagcompound.putBoolean("Chested", getIsChested());
@@ -420,6 +447,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal {
     @Override
     public void readAdditionalSaveData(CompoundTag nbttagcompound) {
         super.readAdditionalSaveData(nbttagcompound);
+        loadHuntingCooldown(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setSitting(nbttagcompound.getBoolean("Sitting"));
         setIsChested(nbttagcompound.getBoolean("Chested"));

@@ -38,9 +38,14 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootTable;
 import drzhark.mocreatures.network.MoCPacketDistributor;
+import drzhark.mocreatures.entity.ai.HuntingAnimal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.Difficulty;
 
-public class MoCEntityKomodo extends MoCEntityTameableAnimal {
+public class MoCEntityKomodo extends MoCEntityTameableAnimal implements HuntingAnimal {
 
+    private int huntingCooldown = 0;
     private static final EntityDataAccessor<Boolean> RIDEABLE = SynchedEntityData.defineId(MoCEntityKomodo.class, EntityDataSerializers.BOOLEAN);
     public int tailCounter;
     public int tongueCounter;
@@ -73,8 +78,9 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(7, new EntityAIWanderMoC2(this, 0.9D));
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        //this.targetSelector.addGoal(2, new EntityAIHunt<>(this, AnimalEntity.class, true));
-        this.targetSelector.addGoal(3, new EntityAIHunt<>(this, Player.class, false));
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, LivingEntity.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false,
+                player -> !getIsTamed() && !isBaby() && this.level().getDifficulty() != Difficulty.PEACEFUL));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -139,6 +145,7 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     @Override
     public void aiStep() {
         super.aiStep();
+        tickHuntingCooldown();
         if (this.sitCounter > 0 && (this.isVehicle() || ++this.sitCounter > 150)) {
             this.sitCounter = 0;
         }
@@ -249,13 +256,25 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
     @Override
     public void addAdditionalSaveData(CompoundTag nbttagcompound) {
         super.addAdditionalSaveData(nbttagcompound);
+        saveHuntingCooldown(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag nbttagcompound) {
         super.readAdditionalSaveData(nbttagcompound);
+        loadHuntingCooldown(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
+    }
+
+    @Override
+    public int getHuntingCooldown() {
+        return this.huntingCooldown;
+    }
+
+    @Override
+    public void setHuntingCooldown(int cooldown) {
+        this.huntingCooldown = cooldown;
     }
     public double getPassengersRidingOffset() {
         double yOff = 0.15F;
@@ -333,6 +352,9 @@ public class MoCEntityKomodo extends MoCEntityTameableAnimal {
         boolean hit = super.doHurtTarget(entityIn);
         if (hit && entityIn instanceof LivingEntity livingTarget) {
             livingTarget.addEffect(new MobEffectInstance(MobEffects.POISON, 150, 1));
+            if (!(entityIn instanceof Player)) {
+                startHuntingCooldown();
+            }
         }
         return hit;
     }

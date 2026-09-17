@@ -437,113 +437,51 @@ public class MoCEntities {
                     .build(ResourceLocation.fromNamespaceAndPath(MoCConstants.MOD_ID, "trock").toString()));
 
     /** Register natural spawn placement predicates on the NeoForge mod bus. */
+    private static void registerAnimalPlacement(RegisterSpawnPlacementsEvent event, Supplier<? extends EntityType<? extends Animal>> entitySupplier, String name, SpawnPlacementType placementType) {
+        if (MoCEntityFilter.shouldSpawn(name)) {
+            event.register(entitySupplier.get(), placementType,
+                    Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        }
+    }
+
     @SubscribeEvent
     public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
-        event.register(BLACK_BEAR.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(GRIZZLY_BEAR.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(POLAR_BEAR.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(PANDA_BEAR.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(BIRD.get(), SpawnPlacementTypes.NO_RESTRICTIONS,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(DUCK.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(OSTRICH.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TURKEY.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(BOAR.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(BUNNY.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(DEER.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(ELEPHANT.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(GOAT.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(WILDHORSE.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(LEOPARD.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(LION.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(PANTHER.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TIGER.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(LEOGER.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(LIARD.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(LIGER.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(LITHER.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(PANTHARD.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(PANTHGER.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(CROCODILE.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(ENT.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(FILCH_LIZARD.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(FOX.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(KOMODO_DRAGON.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(MOLE.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(MOUSE.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(RACCOON.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(SNAKE.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TURTLE.get(), SpawnPlacementTypes.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(KITTY.get(), SpawnPlacementTypes.ON_GROUND,
-        Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        MoCEntityAnimal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        registerAnimalPlacement(event, BLACK_BEAR, "blackbear", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, GRIZZLY_BEAR, "grizzlybear", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, POLAR_BEAR, "polarbear", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, PANDA_BEAR, "pandabear", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, BIRD, "bird", SpawnPlacementTypes.NO_RESTRICTIONS);
+        registerAnimalPlacement(event, DUCK, "duck", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, OSTRICH, "ostrich", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, TURKEY, "turkey", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, BOAR, "boar", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, BUNNY, "bunny", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, DEER, "deer", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, ELEPHANT, "elephant", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, GOAT, "goat", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, WILDHORSE, "wildhorse", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, LEOPARD, "leopard", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, LION, "lion", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, PANTHER, "panther", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, TIGER, "tiger", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, LEOGER, "leoger", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, LIARD, "liard", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, LIGER, "liger", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, LITHER, "lither", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, PANTHARD, "panthard", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, PANTHGER, "panthger", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, CROCODILE, "crocodile", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, ENT, "ent", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, FILCH_LIZARD, "filchlizard", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, FOX, "fox", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, KOMODO_DRAGON, "komododragon", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, MOLE, "mole", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, MOUSE, "mouse", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, RACCOON, "raccoon", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, SNAKE, "snake", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, TURTLE, "turtle", SpawnPlacementTypes.ON_GROUND);
+        registerAnimalPlacement(event, KITTY, "kitty", SpawnPlacementTypes.ON_GROUND);
         event.register(WYVERN.get(), SpawnPlacementTypes.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, spawnType, pos, random) -> {

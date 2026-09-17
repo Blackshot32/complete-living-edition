@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "mocreatures:lion", "required": false },
+    { "id": "mocreatures:tiger", "required": false },
+    { "id": "mocreatures:panther", "required": false },
+    { "id": "mocreatures:leopard", "required": false },
+    { "id": "mocreatures:liger", "required": false },
+    { "id": "mocreatures:leoger", "required": false },
+    { "id": "mocreatures:liard", "required": false },
+    { "id": "mocreatures:lither", "required": false },
+    { "id": "mocreatures:panthard", "required": false },
+    { "id": "mocreatures:panthger", "required": false },
+    { "id": "mocreatures:komododragon", "required": false },
+    { "id": "mocreatures:shark", "required": false },
+    { "id": "mocreatures:wwolf", "required": false },
+    { "id": "mocreatures:manticore", "required": false },
+    { "id": "mocreatures:werewolf", "required": false }
+  ]
+}

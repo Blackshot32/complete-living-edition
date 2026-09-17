@@ -10,6 +10,7 @@ import drzhark.mocreatures.config.biome.MoCConfig;
 import drzhark.mocreatures.config.biome.SpawnBiomeData;
 import drzhark.mocreatures.entity.MoCEntityData;
 import drzhark.mocreatures.init.MoCEntities;
+import drzhark.mocreatures.init.MoCEntityFilter;
 import drzhark.mocreatures.world.MoCSpawnRegistryCache;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -100,6 +101,10 @@ public class MoCWorldRegistry {
             EntityType<?> entityType = entry.getValue();
             
             if (entityType == null) continue;
+            
+            if (!MoCEntityFilter.shouldSpawn(creatureName)) {
+                continue;
+            }
             
             // Quick pre-check: only do expensive processing if entity has spawn data
             BiomeSpawnConfig.CreatureSpawnData spawnData = BiomeSpawnConfig.getSpawnData(creatureName);

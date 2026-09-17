@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:sheep",
+    "minecraft:cow",
+    "minecraft:pig",
+    "minecraft:chicken",
+    "minecraft:rabbit",
+    { "id": "naturalist:deer", "required": false },
+    { "id": "naturalist:boar", "required": false },
+    { "id": "naturalist:duck", "required": false },
+    { "id": "naturalist:zebra", "required": false },
+    { "id": "naturalist:sparrow", "required": false },
+    { "id": "naturalist:robin", "required": false },
+    { "id": "naturalist:bluejay", "required": false },
+    { "id": "naturalist:cardinal", "required": false },
+    { "id": "naturalist:canary", "required": false },
+    { "id": "naturalist:finch", "required": false },
+    { "id": "naturalist:rat", "required": false }
+  ]
+}

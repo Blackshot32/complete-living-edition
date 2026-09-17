@@ -25,9 +25,11 @@ public class MoCRegistration {
     @SubscribeEvent
     public static void buildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
-            // Add spawn eggs to creative tab when they're registered
+            // Add spawn eggs to creative tab when they're registered, filtering redundant animals
             MoCSpawnEggs.SPAWN_EGGS.getEntries().forEach(egg -> {
-                event.accept(egg.get());
+                if (MoCEntityFilter.isEggAllowed(egg.getId().getPath())) {
+                    event.accept(egg.get());
+                }
             });
         }
     }

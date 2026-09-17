@@ -645,7 +645,7 @@ public class MoCTools {
         }
 
         // SERVER: Destroy blocks
-        if (!level.isClientSide && mobGrief) {
+        if (!level.isClientSide && mobGrief && MoCreatures.proxy.ogreBlockGriefing) {
             ServerLevel serverLevel = (ServerLevel) level;
 
             for (BlockPos pos : affectedBlocks) {
@@ -664,7 +664,7 @@ public class MoCTools {
         }
 
         // SERVER: Set blocks on fire
-        if (!level.isClientSide && mobGrief && fire) {
+        if (!level.isClientSide && mobGrief && fire && MoCreatures.proxy.ogreBlockGriefing) {
             for (BlockPos pos : affectedBlocks) {
                 if (level.getBlockState(pos).isAir() && level.random.nextInt(8) == 0) {
                     ServerLevel serverLevel = (ServerLevel) level;
