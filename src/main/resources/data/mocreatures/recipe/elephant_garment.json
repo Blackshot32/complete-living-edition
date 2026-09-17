@@ -9,9 +9,17 @@
     "#": {
       "tag": "c:wool"
     },
-    "F": {
-      "item": "mocreatures:fur"
-    },
+    "F": [
+      {
+        "item": "mocreatures:fur"
+      },
+      {
+        "tag": "c:leather"
+      },
+      {
+        "item": "minecraft:rabbit_hide"
+      }
+    ],
     "M": {
       "item": "mocreatures:medallion"
     },
