@@ -28,7 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
+public class MoCEntityCrocodile extends MoCEntityTameableAnimal implements drzhark.mocreatures.entity.ai.HuntingAnimal {
 
     private static final EntityDataAccessor<Boolean> IS_RESTING = SynchedEntityData.defineId(MoCEntityCrocodile.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> EATING_PREY = SynchedEntityData.defineId(MoCEntityCrocodile.class, EntityDataSerializers.BOOLEAN);
@@ -37,6 +37,17 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
     public float spin;
     public int spinInt;
     private boolean waterbound;
+    private int huntingCooldown;
+
+    @Override
+    public int getHuntingCooldown() {
+        return this.huntingCooldown;
+    }
+
+    @Override
+    public void setHuntingCooldown(int cooldown) {
+        this.huntingCooldown = cooldown;
+    }
 
     public MoCEntityCrocodile(EntityType<? extends MoCEntityCrocodile> type, Level world) {
         super(type, world);
@@ -60,8 +71,10 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(9, new LookAtPlayerGoal(this, Player.class, 8.0F));
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, Animal.class, true));
-        this.targetSelector.addGoal(3, new EntityAIHunt<>(this, Player.class, false));
+        // Naturalist-style hunting AI: hunt animals and fish when near water with cooldown
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, net.minecraft.world.entity.animal.Animal.class, true));
+        this.targetSelector.addGoal(3, new EntityAIHunt<>(this, net.minecraft.world.entity.animal.AbstractFish.class, true));
+        this.targetSelector.addGoal(4, new EntityAIHunt<>(this, Player.class, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -211,6 +224,21 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal {
         }
 
         super.aiStep();
+        if (!this.level().isClientSide()) {
+            tickHuntingCooldown();
+        }
+    }
+
+    @Override
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag nbttagcompound) {
+        super.addAdditionalSaveData(nbttagcompound);
+        saveHuntingCooldown(nbttagcompound);
+    }
+
+    @Override
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag nbttagcompound) {
+        super.readAdditionalSaveData(nbttagcompound);
+        loadHuntingCooldown(nbttagcompound);
     }
 
     @Override

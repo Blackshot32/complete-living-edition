@@ -13,6 +13,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.player.Player;
@@ -63,11 +64,14 @@ public class MoCEntityBunny extends MoCEntityTameableAnimal {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new EntityAIFollowOwnerPlayer(this, 0.8D, 6F, 5F));
-        this.goalSelector.addGoal(2, new EntityAIPanicMoC(this, 1.0D));
-        this.goalSelector.addGoal(3, new EntityAIFleeFromPlayer(this, 1.0D, 4D));
-        this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
-        this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 0.8D));
-        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, drzhark.mocreatures.entity.hunter.MoCEntityFox.class, 10.0F, 1.0D, 1.3D));
+        this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, drzhark.mocreatures.entity.hunter.MoCEntityBigCat.class, 12.0F, 1.0D, 1.3D));
+        this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, net.minecraft.world.entity.animal.Wolf.class, 10.0F, 1.0D, 1.3D));
+        this.goalSelector.addGoal(3, new EntityAIPanicMoC(this, 1.0D));
+        this.goalSelector.addGoal(4, new EntityAIFleeFromPlayer(this, 1.0D, 4D));
+        this.goalSelector.addGoal(5, new EntityAIFollowAdult(this, 1.0D));
+        this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 0.8D));
+        this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
     }
 
     public static AttributeSupplier.Builder registerAttributes() {

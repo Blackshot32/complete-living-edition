@@ -89,18 +89,54 @@ public class SpawnBiomeData {
                 return false;
             }else{
                 if(type == BiomeEntryType.BIOME_TAG){
-                    // Debug: Log all tags this biome has
-                    // if(biomeHolder != null) {
-                    //     MoCreatures.LOGGER.debug("Checking biome {} for tag {}. Available tags: {}", 
-                    //         registryName, value, 
-                    //         biomeHolder.tags().map(tag -> tag.location().toString()).toList());
-                    // }
-                    
-                    if(biomeHolder.tags().anyMatch((biomeTagKey -> biomeTagKey.location() != null && biomeTagKey.location().toString().equals(value)))){
-                        //MoCreatures.LOGGER.debug("Tag {} FOUND in biome {}", value, registryName);
+                    String altValue = null;
+                    if (value.startsWith("c:is_")) {
+                        altValue = "minecraft:is_" + value.substring(5);
+                    } else if (value.startsWith("minecraft:is_")) {
+                        altValue = "c:is_" + value.substring(13);
+                    }
+                    final String alt = altValue;
+
+                    boolean tagMatched = biomeHolder != null && biomeHolder.tags().anyMatch(biomeTagKey -> {
+                        if (biomeTagKey.location() == null) return false;
+                        String locStr = biomeTagKey.location().toString();
+                        return locStr.equals(value) || (alt != null && locStr.equals(alt));
+                    });
+
+                    if (!tagMatched && registryName != null) {
+                        String path = registryName.getPath().toLowerCase();
+                        if (value.contains("plains") && (path.contains("plains") || path.contains("meadow") || path.contains("prairie"))) {
+                            tagMatched = true;
+                        } else if (value.contains("forest") && (path.contains("forest") || path.contains("woods") || path.contains("grove"))) {
+                            tagMatched = true;
+                        } else if (value.contains("taiga") && (path.contains("taiga") || path.contains("spruce") || path.contains("boreal"))) {
+                            tagMatched = true;
+                        } else if (value.contains("savanna") && (path.contains("savanna") || path.contains("steppe"))) {
+                            tagMatched = true;
+                        } else if (value.contains("jungle") && (path.contains("jungle") || path.contains("rainforest"))) {
+                            tagMatched = true;
+                        } else if (value.contains("swamp") && (path.contains("swamp") || path.contains("marsh") || path.contains("bog") || path.contains("mangrove"))) {
+                            tagMatched = true;
+                        } else if ((value.contains("sandy") || value.contains("desert")) && (path.contains("desert") || path.contains("dune") || path.contains("sand"))) {
+                            tagMatched = true;
+                        } else if (value.contains("snowy") && (path.contains("snow") || path.contains("ice") || path.contains("frozen") || path.contains("glacier"))) {
+                            tagMatched = true;
+                        } else if (value.contains("mountain") && (path.contains("mountain") || path.contains("peak") || path.contains("cliff") || path.contains("hill"))) {
+                            tagMatched = true;
+                        } else if (value.contains("ocean") && (path.contains("ocean") || path.contains("sea") || path.contains("abyss"))) {
+                            tagMatched = true;
+                        } else if (value.contains("river") && (path.contains("river") || path.contains("stream") || path.contains("canal"))) {
+                            tagMatched = true;
+                        } else if (value.contains("beach") && (path.contains("beach") || path.contains("shore"))) {
+                            tagMatched = true;
+                        } else if (value.contains("badlands") && (path.contains("badlands") || path.contains("mesa") || path.contains("canyon"))) {
+                            tagMatched = true;
+                        }
+                    }
+
+                    if (tagMatched) {
                         return !negate;
                     }
-                    //MoCreatures.LOGGER.debug("Tag {} NOT FOUND in biome {}", value, registryName);
                     return negate;
                 } else {
                     if (registryName.toString().equals(value)) {

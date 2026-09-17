@@ -44,7 +44,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import drzhark.mocreatures.network.MoCPacketDistributor;
 
-public class MoCEntityBear extends MoCEntityTameableAnimal {
+public class MoCEntityBear extends MoCEntityTameableAnimal implements drzhark.mocreatures.entity.ai.HuntingAnimal {
 
     private static final EntityDataAccessor<Integer> BEAR_STATE = SynchedEntityData.defineId(MoCEntityBear.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> RIDEABLE = SynchedEntityData.defineId(MoCEntityBear.class, EntityDataSerializers.BOOLEAN);
@@ -55,6 +55,17 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     public ItemStack localstack;
     private int attackCounter;
     private int standingCounter;
+    private int huntingCooldown;
+
+    @Override
+    public int getHuntingCooldown() {
+        return this.huntingCooldown;
+    }
+
+    @Override
+    public void setHuntingCooldown(int cooldown) {
+        this.huntingCooldown = cooldown;
+    }
 
     public MoCEntityBear(EntityType<? extends MoCEntityBear> type, Level world) {
         super(type, world);
@@ -75,8 +86,10 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
-        this.targetSelector.addGoal(3, new EntityAIHunt<>(this, Player.class, false));
+        // Naturalist-style hunting AI: hunt fish and peaceful animals with cooldown
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, net.minecraft.world.entity.animal.Animal.class, true));
+        this.targetSelector.addGoal(3, new EntityAIHunt<>(this, net.minecraft.world.entity.animal.AbstractFish.class, true));
+        this.targetSelector.addGoal(4, new EntityAIHunt<>(this, Player.class, false));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -192,6 +205,9 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     @Override
     public void aiStep() {
         super.aiStep();
+        if (!this.level().isClientSide()) {
+            tickHuntingCooldown();
+        }
         if (this.mouthCounter > 0 && ++this.mouthCounter > 20) {
             this.mouthCounter = 0;
         }
@@ -411,6 +427,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     @Override
     public void addAdditionalSaveData(CompoundTag nbttagcompound) {
         super.addAdditionalSaveData(nbttagcompound);
+        saveHuntingCooldown(nbttagcompound);
         nbttagcompound.putBoolean("Saddle", getIsRideable());
         nbttagcompound.putBoolean("Chested", getIsChested());
         nbttagcompound.putBoolean("Ghost", getIsGhost());
@@ -436,6 +453,7 @@ public class MoCEntityBear extends MoCEntityTameableAnimal {
     @Override
     public void readAdditionalSaveData(CompoundTag nbttagcompound) {
         super.readAdditionalSaveData(nbttagcompound);
+        loadHuntingCooldown(nbttagcompound);
         setRideable(nbttagcompound.getBoolean("Saddle"));
         setIsChested(nbttagcompound.getBoolean("Chested"));
         setIsGhost(nbttagcompound.getBoolean("Ghost"));

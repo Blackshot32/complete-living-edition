@@ -39,12 +39,16 @@ public class MoCEntityManticore extends MoCEntityMob {
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(2, new MoCEntityManticore.AIManticoreAttack(this, 1.0D, false));
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new MoCEntityManticore.AIManticoreAttack(this, 1.2D, false));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new MoCEntityManticore.AIManticoreTarget<>(this, Player.class, false));
         this.targetSelector.addGoal(3, new MoCEntityManticore.AIManticoreTarget<>(this, IronGolem.class, true));
+        this.targetSelector.addGoal(4, new MoCEntityManticore.AIManticoreTarget<>(this, net.minecraft.world.entity.animal.Animal.class, 10, true, false, living -> !this.getIsTamed()));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -259,6 +263,10 @@ public class MoCEntityManticore extends MoCEntityMob {
     static class AIManticoreTarget<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
         public AIManticoreTarget(MoCEntityManticore manticore, Class<T> classTarget, boolean checkSight) {
             super(manticore, classTarget, checkSight);
+        }
+
+        public AIManticoreTarget(MoCEntityManticore manticore, Class<T> classTarget, int interval, boolean checkSight, boolean nearbyOnly, @javax.annotation.Nullable java.util.function.Predicate<LivingEntity> targetPredicate) {
+            super(manticore, classTarget, interval, checkSight, nearbyOnly, targetPredicate);
         }
 
         @Override

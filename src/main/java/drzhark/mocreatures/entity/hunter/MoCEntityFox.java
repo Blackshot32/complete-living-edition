@@ -18,6 +18,8 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,7 +31,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-public class MoCEntityFox extends MoCEntityTameableAnimal {
+public class MoCEntityFox extends MoCEntityTameableAnimal implements drzhark.mocreatures.entity.ai.HuntingAnimal {
+
+    private int huntingCooldown;
+
+    @Override
+    public int getHuntingCooldown() {
+        return this.huntingCooldown;
+    }
+
+    @Override
+    public void setHuntingCooldown(int cooldown) {
+        this.huntingCooldown = cooldown;
+    }
 
     public MoCEntityFox(EntityType<? extends MoCEntityFox> type, Level world) {
         super(type, world);
@@ -44,10 +58,12 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
         this.goalSelector.addGoal(3, new EntityAIFleeFromPlayer(this, 1.0D, 4D));
         this.goalSelector.addGoal(3, new EntityAIFollowOwnerPlayer(this, 0.8D, 2F, 10F));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
-        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.15D, false));
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        //this.targetSelector.addGoal(1, new EntityAIHunt<>(this, AnimalEntity.class, true));
+        this.targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, net.minecraft.world.entity.animal.Animal.class, 10, true, false,
+                target -> target instanceof drzhark.mocreatures.entity.passive.MoCEntityBunny || target instanceof drzhark.mocreatures.entity.passive.MoCEntityDuck || target instanceof drzhark.mocreatures.entity.passive.MoCEntityBird || target instanceof drzhark.mocreatures.entity.passive.MoCEntityMouse || target instanceof net.minecraft.world.entity.animal.Rabbit || target instanceof net.minecraft.world.entity.animal.Chicken));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -107,7 +123,15 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
         }
 
         final ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && stack.getItem() == MoCItems.RAW_TURKEY.get()) {
+        boolean isFoxFood = !stack.isEmpty() && (
+                stack.getItem() == MoCItems.RAW_TURKEY.get() ||
+                stack.is(Items.CHICKEN) ||
+                stack.is(Items.RABBIT) ||
+                stack.is(Items.SWEET_BERRIES) ||
+                stack.is(Items.GLOW_BERRIES) ||
+                stack.is(net.neoforged.neoforge.common.Tags.Items.FOODS_RAW_MEAT)
+        );
+        if (isFoxFood) {
             if (!player.isCreative()) stack.shrink(1);
 
             if (!this.level().isClientSide()) {
@@ -123,6 +147,26 @@ public class MoCEntityFox extends MoCEntityTameableAnimal {
         }
 
         return super.mobInteract(player, hand);
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (!this.level().isClientSide()) {
+            tickHuntingCooldown();
+        }
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.addAdditionalSaveData(nbttagcompound);
+        saveHuntingCooldown(nbttagcompound);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag nbttagcompound) {
+        super.readAdditionalSaveData(nbttagcompound);
+        loadHuntingCooldown(nbttagcompound);
     }
 
     @Override

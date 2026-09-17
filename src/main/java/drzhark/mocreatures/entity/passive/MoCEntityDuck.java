@@ -48,8 +48,11 @@ public class MoCEntityDuck extends MoCEntityAnimal {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new PanicGoal(this, 1.4D));
+        this.goalSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, drzhark.mocreatures.entity.hunter.MoCEntityFox.class, 8.0F, 1.2D, 1.4D));
+        this.goalSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, drzhark.mocreatures.entity.hunter.MoCEntityCrocodile.class, 10.0F, 1.2D, 1.4D));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
+        this.goalSelector.addGoal(7, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
     }
 
     public static AttributeSupplier.Builder registerAttributes() {

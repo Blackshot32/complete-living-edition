@@ -44,8 +44,12 @@ public class MoCEntityDeer extends MoCEntityTameableAnimal {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityDeer) && (entity.getBbHeight() > 0.8F || entity.getBbWidth() > 0.8F), 6.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.2D));
-        this.goalSelector.addGoal(2, new PanicGoal(this, this.getMyAISpeed() * 1.2D));
+        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, drzhark.mocreatures.entity.hunter.MoCEntityBigCat.class, 14.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.3D));
+        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, drzhark.mocreatures.entity.hunter.MoCEntityBear.class, 14.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.3D));
+        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, drzhark.mocreatures.entity.hunter.MoCEntityKomodo.class, 12.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.3D));
+        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, net.minecraft.world.entity.animal.Wolf.class, 12.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.3D));
+        this.goalSelector.addGoal(2, new EntityAIFleeFromEntityMoC(this, entity -> !(entity instanceof MoCEntityDeer) && (entity.getBbHeight() > 0.8F || entity.getBbWidth() > 0.8F), 6.0F, this.getMyAISpeed(), this.getMyAISpeed() * 1.2D));
+        this.goalSelector.addGoal(3, new PanicGoal(this, this.getMyAISpeed() * 1.2D));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, getMyAISpeed()));
         this.goalSelector.addGoal(5, new EntityAIWanderMoC2(this, getMyAISpeed()));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));

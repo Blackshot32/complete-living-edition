@@ -50,8 +50,13 @@ public class MoCEntityRat extends MoCEntityMob {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, net.minecraft.world.entity.animal.Cat.class, 10.0F, 1.2D, 1.4D));
+        this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, drzhark.mocreatures.entity.hunter.MoCEntityBigCat.class, 12.0F, 1.2D, 1.4D));
         this.goalSelector.addGoal(2, new MoCEntityRat.AIRatAttack(this, 1.0D, true));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(9, new RandomLookAroundGoal(this));
+
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new MoCEntityRat.AIRatTarget<>(this, Player.class, true));
         this.targetSelector.addGoal(3, new MoCEntityRat.AIRatTarget<>(this, IronGolem.class, true));
