@@ -53,6 +53,17 @@ public class MoCCreativeTabs {
                                 output.accept(item);
                             }
                         }
+
+                        // Add Mo' Creatures spawn eggs (filtered to avoid cluttering with redundant animals)
+                        for (var eggEntry : MoCSpawnEggs.SPAWN_EGGS.getEntries()) {
+                            Item item = eggEntry.get();
+                            String eggPath = eggEntry.getId().getPath();
+                            String creatureName = eggPath.endsWith("_spawn_egg") ? 
+                                    eggPath.substring(0, eggPath.length() - "_spawn_egg".length()) : eggPath;
+                            if (MoCEntityFilter.shouldSpawn(creatureName)) {
+                                output.accept(item);
+                            }
+                        }
                     })
                     .build()
     );

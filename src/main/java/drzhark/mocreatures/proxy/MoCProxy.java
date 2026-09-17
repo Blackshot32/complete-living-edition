@@ -83,7 +83,7 @@ public class MoCProxy {
     public float ogreCaveStrength;
     public float ogreFireStrength;
     public float ogreStrength;
-    public boolean ogreBlockGriefing = false;
+    public boolean ogreBlockGriefing = true;
     public int filchLizardSpawnItemChance;
     public int kittyVillageChance;
     public int maxOPTamed;
@@ -737,7 +737,7 @@ public class MoCProxy {
         this.ogreCaveStrength = (float) this.mocSettingsConfig.get(CATEGORY_MOC_MONSTER_GENERAL_SETTINGS, "OgreCaveStrength", 2.5D, "Strength value for cave ogres.").getDouble(2.5D);
         this.ogreFireStrength = (float) this.mocSettingsConfig.get(CATEGORY_MOC_MONSTER_GENERAL_SETTINGS, "OgreFireStrength", 3.0D, "Strength value for fire ogres.").getDouble(3.0D);
         this.ogreStrength = (float) this.mocSettingsConfig.get(CATEGORY_MOC_MONSTER_GENERAL_SETTINGS, "OgreStrength", 2.0D, "Strength value for ogres.").getDouble(2.0D);
-        this.ogreBlockGriefing = this.mocSettingsConfig.get(CATEGORY_MOC_MONSTER_GENERAL_SETTINGS, "OgreBlockGriefing", false, "Allows ogres to destroy blocks. False by default to protect machines, factories and structures.").getBoolean(false);
+        this.ogreBlockGriefing = this.mocSettingsConfig.get(CATEGORY_MOC_MONSTER_GENERAL_SETTINGS, "OgreBlockGriefing", true, "Allows ogres to destroy blocks.").getBoolean(true);
         this.ostrichEggDropChance = this.mocSettingsConfig.get(CATEGORY_MOC_CREATURE_GENERAL_SETTINGS, "OstrichEggDropChance", 10, "Percentage chance of a ostrich to drop an egg when killed.").getInt(10);
         this.particleFX = this.mocSettingsConfig.get(CATEGORY_MOC_GENERAL_SETTINGS, "ParticleFX", 3, "Particle FX. 0 = off, 1 = minimal, 2 = normal, 3 = maximal.").getInt(3);
         this.rareItemDropChance = this.mocSettingsConfig.get(CATEGORY_MOC_GENERAL_SETTINGS, "RareItemDropChance", 25, "Percentage chance of dropping a rare item.").getInt(25);
