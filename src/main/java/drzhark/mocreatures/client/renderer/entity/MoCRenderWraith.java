@@ -5,8 +5,6 @@ package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import drzhark.mocreatures.client.model.MoCModelWraith;
 import drzhark.mocreatures.entity.hostile.MoCEntityFlameWraith;
 import drzhark.mocreatures.entity.hostile.MoCEntityWraith;

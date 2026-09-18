@@ -42,6 +42,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.resources.ResourceKey;
@@ -992,5 +993,10 @@ public class MoCEntityElephant extends MoCEntityTameableAnimal {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        return this.getBoundingBox().inflate(1.5D, 1.0D, 1.5D);
     }
 }

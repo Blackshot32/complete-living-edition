@@ -10,7 +10,6 @@
  */
 package drzhark.mocreatures.client.model;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.entity.ambient.MoCEntityRoach;
@@ -223,19 +222,12 @@ public class MoCModelRoach<T extends MoCEntityRoach> extends EntityModel<T> impl
         // Render opaque parts first
         renderOpaqueParts(poseStack, vertexConsumer, packedLight, packedOverlay, color);
         
-        // Render transparent parts with blending if needed
+        // Render transparent parts with tint if needed
         if (shouldRenderPartialTransparency()) {
-            poseStack.pushPose();
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.clearColor(getTransparencyColor()[0], getTransparencyColor()[1], getTransparencyColor()[2], getTransparencyValue());
-            
+            int partialTint = packPartialColor();
+            renderTransparentParts(poseStack, vertexConsumer, packedLight, packedOverlay, partialTint);
+        } else {
             renderTransparentParts(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-            
-            RenderSystem.disableBlend();
-            poseStack.popPose();
-            // Reset shader color to opaque white
-            RenderSystem.clearColor(1F, 1F, 1F, 1F);
         }
     }
     

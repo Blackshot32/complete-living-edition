@@ -4,8 +4,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.client.model.MoCModelFirefly;
@@ -58,19 +56,12 @@ public class MoCRenderFirefly extends MoCRenderInsect<MoCEntityFirefly, MoCModel
         public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLightIn, MoCEntityFirefly entity, 
                            float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, 
                            float netHeadYaw, float headPitch) {
-            this.setTailBrightness(poseStack, entity, partialTicks);
-            VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(
+            VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.eyes(
                     MoCreatures.proxy.getModelTexture("firefly_glow.png")));
             
-            // Use the parent model directly - it will have already been set up with the right properties
-            this.getParentModel().renderToBuffer(poseStack, vertexConsumer, packedLightIn, 
+            // Render emissive glow layer with full brightness
+            this.getParentModel().renderToBuffer(poseStack, vertexConsumer, 15728880, 
                     OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
-        }
-
-        protected void setTailBrightness(PoseStack poseStack, MoCEntityFirefly entityliving, float partialTicks) {
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 }

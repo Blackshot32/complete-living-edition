@@ -7,6 +7,7 @@ import net.minecraft.core.component.DataComponents;
 import drzhark.mocreatures.MoCTools;
 import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIFollowAdult;
+import drzhark.mocreatures.entity.ai.EntityAIHerdPanic;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.inventory.MoCAnimalChest;
 import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
@@ -113,6 +114,7 @@ public class MoCEntityHorse extends MoCEntityTameableAnimal {
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new EntityAIHerdPanic(this, 1.35D, 18.0D));
         this.goalSelector.addGoal(3, new EntityAIFollowAdult(this, 1.0D));
         this.goalSelector.addGoal(4, this.wander = new EntityAIWanderMoC2(this, 1.0D, 80));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));

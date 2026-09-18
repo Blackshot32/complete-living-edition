@@ -1,6 +1,5 @@
 package drzhark.mocreatures.client.model;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.entity.ambient.MoCEntityButterfly;
@@ -254,17 +253,10 @@ public class MoCModelButterfly<T extends MoCEntityButterfly> extends EntityModel
         // Render opaque parts first
         renderOpaqueParts(poseStack, buffer, packedLight, packedOverlay, color);
         
-        // Render transparent parts with blending if needed
+        // Render transparent parts with tint if needed
         if (shouldRenderPartialTransparency()) {
-            poseStack.pushPose();
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.clearColor(getTransparencyColor()[0], getTransparencyColor()[1], getTransparencyColor()[2], getTransparencyValue());
-            
-            renderTransparentParts(poseStack, buffer, packedLight, packedOverlay, color);
-            
-            RenderSystem.disableBlend();
-            poseStack.popPose();
+            int partialTint = packPartialColor();
+            renderTransparentParts(poseStack, buffer, packedLight, packedOverlay, partialTint);
         } else {
             // Render folded wings as opaque when not flying
             renderFoldedWings(poseStack, buffer, packedLight, packedOverlay, color);

@@ -125,9 +125,28 @@ public class MoCModelDolphin<T extends MoCEntityDolphin> extends EntityModel<T> 
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks,
                           float netHeadYaw, float headPitch) {
-        // In your old setRotationAngles, only the two tail‐fins were animated:
-        this.RTailFin.xRot = Mth.cos(limbSwing * 0.4F) * limbSwingAmount;
-        this.LTailFin.xRot = Mth.cos(limbSwing * 0.4F) * limbSwingAmount;
+        // Cetacean vertical undulation (dolphins pump tails up and down, not side to side)
+        float swimSpeed = limbSwing * 0.5F + ageInTicks * 0.12F;
+        float swimAmp = Math.max(limbSwingAmount * 0.4F, 0.14F);
+
+        // Vertical harmonic wave down PTail and fluke fins
+        float tailWave = Mth.cos(swimSpeed) * swimAmp;
+        this.PTail.xRot = tailWave * 0.45F;
+        this.RTailFin.xRot = Mth.cos(swimSpeed - 0.6F) * swimAmp;
+        this.LTailFin.xRot = this.RTailFin.xRot;
+
+        // Head pitch and yaw stabilization
+        float headYawRad = netHeadYaw * ((float)Math.PI / 180F) * 0.5F;
+        float headPitchRad = headPitch * ((float)Math.PI / 180F) * 0.5F;
+        this.UHead.yRot = headYawRad;
+        this.UHead.xRot = headPitchRad - tailWave * 0.12F;
+        this.DHead.yRot = headYawRad;
+        this.DHead.xRot = headPitchRad - tailWave * 0.12F;
+
+        // Pectoral fin hydroplane flapping & banking
+        float finFlap = Mth.sin(swimSpeed * 0.5F) * 0.08F;
+        this.LeftFin.zRot = 0.5235988F + finFlap - headYawRad * 0.2F;
+        this.RightFin.zRot = -0.5235988F - finFlap - headYawRad * 0.2F;
     }
 
     @Override
