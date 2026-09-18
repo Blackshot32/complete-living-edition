@@ -1,5 +1,5 @@
 {
-  "parent": "block/cube_bottom_top",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
     "bottom": "mocreatures:block/dirt_wyvern",
     "top": "mocreatures:block/grass_top_wyvern",
