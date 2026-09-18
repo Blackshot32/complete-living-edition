@@ -6,6 +6,7 @@ package drzhark.mocreatures.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.MoCreatures;
+import drzhark.mocreatures.client.model.IPartialTransparencyModel;
 import drzhark.mocreatures.entity.IMoCEntity;
 import drzhark.mocreatures.entity.passive.MoCEntityHorse;
 import drzhark.mocreatures.entity.hunter.MoCEntityBigCat;
@@ -85,13 +86,6 @@ public class MoCRenderMoC<T extends Mob, M extends EntityModel<T>> extends MobRe
         // Calculate transparency
         float transparency = calculateTransparency(entityIn);
         
-        // Choose appropriate render type
-        RenderType renderType = transparency < 1.0F
-                ? RenderType.entityTranslucent(getTextureLocation(entityIn))
-                : RenderType.entityCutout(getTextureLocation(entityIn));
-
-        VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
-
         // Setup rotations and animations
         float bodyRot = Mth.rotLerp(partialTicks, entityIn.yBodyRotO, entityIn.yBodyRot);
         float headRot = Mth.rotLerp(partialTicks, entityIn.yHeadRotO, entityIn.yHeadRot);
@@ -102,20 +96,51 @@ public class MoCRenderMoC<T extends Mob, M extends EntityModel<T>> extends MobRe
         model.prepareMobModel(entityIn, 0, 0, partialTicks);
         model.setupAnim(entityIn, 0, 0, entityIn.tickCount + partialTicks, headRotDelta, pitch);
 
+        // Insects and similar entities have opaque bodies but translucent wings.
+        // They must be emitted into separate render buffers; changing RenderSystem
+        // state inside a model corrupts batched rendering and is not shader-safe.
+        if (model instanceof IPartialTransparencyModel<?> partialModel) {
+            VertexConsumer opaqueConsumer = buffer.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entityIn)));
+
+            if (partialModel.shouldRenderPartialTransparency()) {
+                partialModel.renderOpaqueParts(poseStack, opaqueConsumer, packedLight, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+                float[] partialColor = partialModel.getTransparencyColor();
+                int partialTint = packColor(partialModel.getTransparencyValue(), partialColor);
+                VertexConsumer transparentConsumer = buffer.getBuffer(RenderType.entityTranslucent(getTextureLocation(entityIn)));
+                partialModel.renderTransparentParts(poseStack, transparentConsumer, packedLight, OverlayTexture.NO_OVERLAY, partialTint);
+            } else {
+                // The model's normal path draws folded wings as opaque.
+                model.renderToBuffer(poseStack, opaqueConsumer, packedLight, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+            }
+
+            poseStack.popPose();
+            renderNameAndHealth(entityIn, poseStack, buffer, packedLight);
+            return;
+        }
+
+        RenderType renderType = transparency < 1.0F
+                ? RenderType.entityTranslucent(getTextureLocation(entityIn))
+                : RenderType.entityCutout(getTextureLocation(entityIn));
+        VertexConsumer vertexConsumer = buffer.getBuffer(renderType);
+
         // Get color tint
         float[] color = getTransparencyColor(entityIn);
 
         // Render with transparency using the 1.21 packed ARGB model color.
-        int packedColor = ((int) (transparency * 255.0F) << 24)
-                | ((int) (color[0] * 255.0F) << 16)
-                | ((int) (color[1] * 255.0F) << 8)
-                | (int) (color[2] * 255.0F);
+        int packedColor = packColor(transparency, color);
         model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, packedColor);
 
         poseStack.popPose();
 
         // Render name and health if needed
         renderNameAndHealth(entityIn, poseStack, buffer, packedLight);
+    }
+
+    private static int packColor(float alpha, float[] color) {
+        return ((int) (Mth.clamp(alpha, 0.0F, 1.0F) * 255.0F) << 24)
+                | ((int) (Mth.clamp(color[0], 0.0F, 1.0F) * 255.0F) << 16)
+                | ((int) (Mth.clamp(color[1], 0.0F, 1.0F) * 255.0F) << 8)
+                | (int) (Mth.clamp(color[2], 0.0F, 1.0F) * 255.0F);
     }
     
     /**

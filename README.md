@@ -29,6 +29,10 @@
 * **Cross-Namespace Compatibility:** Full bidirectional support for `#c:is_*` and `#minecraft:is_*` convention tags.
 * **Smart Fallback:** Native compatibility with worldgen mods like **Terralith** and **Biomes O' Plenty** via intelligent path classification (plains, forest, taiga, savanna, jungle, swamp, desert, snowy, mountain, ocean, river, badlands).
 
+### 🧩 Extensible AI Compatibility
+* **Datapack-driven prey lists:** Pack makers can append an entity to `#mocreatures:predator_prey` for large predators or `#mocreatures:fox_prey` for foxes, without adding a code dependency between mods.
+* **Safe target selection:** Tamed animals are excluded from autonomous hunting; third-party creatures can participate even when they do not inherit vanilla's `Animal` class.
+
 ### 🐎 Mythological Horse Transmutation
 * Tamed horses can be fed Mo' Creatures Magical Essences to transform them:
   * **Heart of Fire** $\rightarrow$ **Nightmare** (fire trails, lava immunity)
