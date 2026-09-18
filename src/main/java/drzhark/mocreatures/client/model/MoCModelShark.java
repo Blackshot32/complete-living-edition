@@ -379,8 +379,25 @@ public class MoCModelShark<T extends MoCEntityShark> extends EntityModel<T> {
 
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        // Swing the tail side‐to‐side depending on movement. /.4f matches the old "/4"
-        this.tail.yRot = (Mth.cos(limbSwing * 0.6662F) * limbSwingAmount) * 0.25F;
+        // Continuous swimming undulation down the body chain (sharks constantly swim to breathe)
+        float swimSpeed = limbSwing * 0.55F + ageInTicks * 0.08F;
+        float swimAmp = Math.max(limbSwingAmount * 0.45F, 0.16F);
+
+        // Fluid S-curve undulation through torso2 -> tail -> caudal_fin
+        this.torso2.yRot = Mth.sin(swimSpeed) * (swimAmp * 0.35F);
+        this.tail.yRot = Mth.sin(swimSpeed - 0.65F) * (swimAmp * 0.65F);
+        this.caudal_fin.yRot = Mth.sin(swimSpeed - 1.30F) * (swimAmp * 0.85F);
+
+        // Head yaw and pitch with subtle counter-yaw stabilization
+        float headYawRad = netHeadYaw * ((float)Math.PI / 180F);
+        float headPitchRad = headPitch * ((float)Math.PI / 180F);
+        this.neck.yRot = headYawRad * 0.3F - (Mth.sin(swimSpeed) * (swimAmp * 0.12F));
+        this.neck.xRot = headPitchRad * 0.4F;
+
+        // Hydrofoil pectoral fin flutter & banking
+        float finFlutter = Mth.cos(swimSpeed * 0.5F) * 0.06F;
+        this.left_fin.zRot = -0.7854F + finFlutter - (headYawRad * 0.15F);
+        this.right_fin.zRot = 0.7854F - finFlutter - (headYawRad * 0.15F);
     }
 
     @Override

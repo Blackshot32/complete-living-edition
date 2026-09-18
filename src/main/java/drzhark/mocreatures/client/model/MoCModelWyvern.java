@@ -1,6 +1,5 @@
 package drzhark.mocreatures.client.model;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.MoCTools;
@@ -1369,13 +1368,6 @@ public class MoCModelWyvern<T extends MoCEntityWyvern> extends EntityModel<T> {
         // Apply the entity’s vertical offset:
         poseStack.translate(0F, yOffset, 0F);
 
-        // If ghost, enable translucent blending:
-        if (isGhost) {
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.clearColor(0.8F, 0.8F, 0.8F, transparency);
-        }
-
         // Render spine+tail+chest in order:
         this.back1.render(poseStack, buffer, packedLight, packedOverlay, color);
         this.Tail.render(poseStack, buffer, packedLight, packedOverlay, color);
@@ -1505,10 +1497,6 @@ public class MoCModelWyvern<T extends MoCEntityWyvern> extends EntityModel<T> {
         this.diamondrightshoulder.render(poseStack, buffer, packedLight, packedOverlay, color);
         this.diamondchestarmor.render(poseStack, buffer, packedLight, packedOverlay, color);
 
-        // If ghost, disable blending so future renders aren’t translucent:
-        if (isGhost) {
-            RenderSystem.disableBlend();
-        }
         poseStack.popPose();
     }
 }

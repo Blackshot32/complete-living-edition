@@ -5,7 +5,6 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import drzhark.mocreatures.entity.ambient.MoCEntityMaggot;
 
@@ -139,10 +138,6 @@ public class MoCModelMaggot<T extends MoCEntityMaggot> extends EntityModel<T> {
     public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int packedColor) {
         poseStack.pushPose();
 
-        // Mirror the old RenderSystem.enableBlend() / defaultBlendFunc() calls:
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-
         // f9 = -(cos(limbSwing * 3)) * limbSwingAmount * 2
         float f9 = -Mth.cos(this.limbSwing * 3.0F) * this.limbSwingAmount * 2.0F;
         // scale Z by (1 + f9)
@@ -154,8 +149,6 @@ public class MoCModelMaggot<T extends MoCEntityMaggot> extends EntityModel<T> {
         this.Tail.render(poseStack, buffer, packedLight, packedOverlay, packedColor);
         this.Tailtip.render(poseStack, buffer, packedLight, packedOverlay, packedColor);
 
-        // Disable blending and pop
-        RenderSystem.disableBlend();
         poseStack.popPose();
     }
 }

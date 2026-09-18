@@ -12,7 +12,6 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 
 @OnlyIn(Dist.CLIENT)
@@ -275,23 +274,17 @@ public class MoCModelHorse<T extends MoCEntityHorse> extends MoCModelAbstractHor
                 this.outerWingR.render(poseStack, buffer, packedLight, packedOverlay, color);
             } else if (type > 44 && type < 60) { //fairys
                 poseStack.pushPose();
-                com.mojang.blaze3d.systems.RenderSystem.enableBlend();
                 float transparencyVal = 0.7F;
-                com.mojang.blaze3d.systems.RenderSystem.defaultBlendFunc();
-                com.mojang.blaze3d.systems.RenderSystem.clearColor(1.2F, 1.2F, 1.2F, transparencyVal);
+                int wingColor = ((Math.round(transparencyVal * 255.0F) & 0xFF) << 24) | (color & 0x00FFFFFF);
                 poseStack.scale(1.3F, 1.0F, 1.3F);
-                this.butterflyL.render(poseStack, buffer, packedLight, packedOverlay, color);
-                this.butterflyR.render(poseStack, buffer, packedLight, packedOverlay, color);
-                com.mojang.blaze3d.systems.RenderSystem.disableBlend();
+                this.butterflyL.render(poseStack, buffer, packedLight, packedOverlay, wingColor);
+                this.butterflyR.render(poseStack, buffer, packedLight, packedOverlay, wingColor);
                 poseStack.popPose();
             }
         } else
         //rendering a ghost or vanishing
         {
             poseStack.pushPose();
-            com.mojang.blaze3d.systems.RenderSystem.enableBlend();
-            com.mojang.blaze3d.systems.RenderSystem.defaultBlendFunc();
-            com.mojang.blaze3d.systems.RenderSystem.clearColor(0.8F, 0.8F, 0.8F, transparency);
             poseStack.scale(1.3F, 1.0F, 1.3F);
 
             this.ear1.render(poseStack, buffer, packedLight, packedOverlay, color);
@@ -359,11 +352,9 @@ public class MoCModelHorse<T extends MoCEntityHorse> extends MoCModelAbstractHor
                 }
             }
 
-            com.mojang.blaze3d.systems.RenderSystem.disableBlend();
             poseStack.popPose();
 
-            if (type == 21 || type == 22)//|| (type >=50 && type <60))
-            {
+            if (type == 21 || type == 22) {
                 float wingTransparency = 0F;
                 if (wingflapInt != 0) {
                     wingTransparency = 1F - (((float) wingflapInt) / 25);
@@ -371,14 +362,11 @@ public class MoCModelHorse<T extends MoCEntityHorse> extends MoCModelAbstractHor
                 if (wingTransparency > transparency) {
                     wingTransparency = transparency;
                 }
+                int wingColor = ((Math.round(wingTransparency * 255.0F) & 0xFF) << 24) | (color & 0x00FFFFFF);
                 poseStack.pushPose();
-                com.mojang.blaze3d.systems.RenderSystem.enableBlend();
-                com.mojang.blaze3d.systems.RenderSystem.defaultBlendFunc();
-                com.mojang.blaze3d.systems.RenderSystem.clearColor(0.8F, 0.8F, 0.8F, wingTransparency);
                 poseStack.scale(1.3F, 1.0F, 1.3F);
-                this.butterflyL.render(poseStack, buffer, packedLight, packedOverlay, color);
-                this.butterflyR.render(poseStack, buffer, packedLight, packedOverlay, color);
-                com.mojang.blaze3d.systems.RenderSystem.disableBlend();
+                this.butterflyL.render(poseStack, buffer, packedLight, packedOverlay, wingColor);
+                this.butterflyR.render(poseStack, buffer, packedLight, packedOverlay, wingColor);
                 poseStack.popPose();
             }
         }

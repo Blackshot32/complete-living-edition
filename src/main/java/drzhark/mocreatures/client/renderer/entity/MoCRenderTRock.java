@@ -4,7 +4,6 @@
 package drzhark.mocreatures.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import drzhark.mocreatures.entity.item.MoCEntityThrowableRock;
 import drzhark.mocreatures.MoCreatures;
 import net.minecraft.client.Minecraft;
@@ -33,7 +32,6 @@ public class MoCRenderTRock extends EntityRenderer<MoCEntityThrowableRock> {
         BlockState state = entitytrock.getState();
         poseStack.translate(-0.5F, 0.25F, -0.5F);
         poseStack.mulPose(Axis.YN.rotationDegrees(((100 - entitytrock.acceleration) / 10F) * 36F));
-        RenderSystem.clearColor(1.0F, 1.0F, 1.0F, 1.0F);
         
         // Render the block state
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(

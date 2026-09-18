@@ -5,7 +5,6 @@ package drzhark.mocreatures.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -1243,14 +1242,6 @@ public abstract class MoCModelAbstractBigCat<T extends Entity> extends EntityMod
 
         poseStack.pushPose();
 
-        if (this.isGhost) {
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            // In 1.16.5: RenderSystem.color4f(0.8F,0.8F,0.8F, updateGhostTransparency());
-            // updateGhostTransparency() always returned 1.0F before, so it’s effectively opaque.
-            RenderSystem.clearColor(0.8F, 0.8F, 0.8F, 1.0F);
-        }
-
         // 2) Draw the main Chest (all its children go automatically)
         this.Chest.render(poseStack, buffer, packedLight, packedOverlay, packedColor);
 
@@ -1281,10 +1272,6 @@ public abstract class MoCModelAbstractBigCat<T extends Entity> extends EntityMod
             this.RightHarness.render(poseStack, buffer, packedLight, packedOverlay, packedColor);
         }
 
-        if (this.isGhost) {
-            RenderSystem.disableBlend();
-            RenderSystem.clearColor(1F, 1F, 1F, 1F);
-        }
         poseStack.popPose();
     }
 

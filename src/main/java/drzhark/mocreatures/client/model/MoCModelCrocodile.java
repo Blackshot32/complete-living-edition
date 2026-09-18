@@ -603,26 +603,49 @@ public class MoCModelCrocodile<T extends MoCEntityCrocodile> extends EntityModel
             this.Leg4A.zRot = -latrot;
         }
 
-        // Tail swaying:
-        float tailYaw = Mth.cos(limbSwing * 0.6662F) * 0.7F * limbSwingAmount;
-        this.TailA.yRot = tailYaw;
-        this.TailB.yRot = tailYaw;
-        this.TailC.yRot = tailYaw;
-        this.TailD.yRot = tailYaw;
+        // Dynamic harmonic tail undulation:
+        float tailSpeed;
+        float tailAmp;
+        if (this.swimming) {
+            float swimAmount = Math.max(limbSwingAmount, 0.25F);
+            tailSpeed = limbSwing * 0.6F + ageInTicks * 0.12F;
+            tailAmp = 0.55F * swimAmount;
+        } else {
+            tailSpeed = limbSwing * 0.6662F;
+            tailAmp = 0.45F * limbSwingAmount + Mth.sin(ageInTicks * 0.05F) * 0.03F;
+        }
 
-        // Rotate all tail-spikes in sync
-        this.Spike0.yRot  = tailYaw;
-        this.Spike1.yRot  = tailYaw;
-        this.Spike2.yRot  = tailYaw;
-        this.Spike3.yRot  = tailYaw;
-        this.Spike4.yRot  = tailYaw;
-        this.Spike5.yRot  = tailYaw;
-        this.Spike6.yRot  = tailYaw;
-        this.Spike7.yRot  = tailYaw;
-        this.Spike8.yRot  = tailYaw;
-        this.Spike9.yRot  = tailYaw;
-        this.Spike10.yRot = tailYaw;
-        this.Spike11.yRot = tailYaw;
+        // Progressive phase delay along the 4 segments for a natural sinuous reptile wave:
+        float tailYawA = Mth.cos(tailSpeed) * tailAmp;
+        float tailYawB = Mth.cos(tailSpeed - 0.35F) * (tailAmp * 1.15F);
+        float tailYawC = Mth.cos(tailSpeed - 0.70F) * (tailAmp * 1.30F);
+        float tailYawD = Mth.cos(tailSpeed - 1.05F) * (tailAmp * 1.45F);
+
+        this.TailA.yRot = tailYawA;
+        this.TailB.yRot = tailYawB;
+        this.TailC.yRot = tailYawC;
+        this.TailD.yRot = tailYawD;
+
+        // Tail spikes sync directly to their corresponding tail segment:
+        // TailA (Z: 0..8):
+        this.Spike10.yRot = tailYawA;
+        this.Spike11.yRot = tailYawA;
+        this.Spike8.yRot  = tailYawA;
+        this.Spike9.yRot  = tailYawA;
+
+        // TailB (Z: 8..16):
+        this.Spike6.yRot  = tailYawB;
+        this.Spike7.yRot  = tailYawB;
+        this.Spike4.yRot  = tailYawB;
+        this.Spike5.yRot  = tailYawB;
+
+        // TailC (Z: 16..22):
+        this.Spike2.yRot  = tailYawC;
+        this.Spike3.yRot  = tailYawC;
+
+        // TailD (Z: 22..28):
+        this.Spike0.yRot  = tailYawD;
+        this.Spike1.yRot  = tailYawD;
 
         // Handle bite animation: UJaw and LJaw open/close around head X‐rotation
         float f = this.biteProgress;

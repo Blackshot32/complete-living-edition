@@ -35,6 +35,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -260,5 +261,10 @@ public class MoCEntityShark extends MoCEntityTameableAquatic {
         public boolean canUse() {
             return super.canUse();
         }
+    }
+
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        return this.getBoundingBox().inflate(2.0D, 1.0D, 2.0D);
     }
 }
