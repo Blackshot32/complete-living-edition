@@ -45,7 +45,7 @@
 ## 📦 Requirements & Installation
 
 1. Install **Minecraft 1.21.1** with **NeoForge 21.1.1+**.
-2. Download `mocreatures-1.21.1-1.0.9-complete-edition.jar` from the [Releases](https://github.com/Blackshot32/complete-living-edition/releases) section.
+2. Download `mocreatures-1.21.1-1.0.10-complete-edition.jar` from the [Releases](https://github.com/Blackshot32/complete-living-edition/releases) section.
 3. Place the `.jar` inside your `.minecraft/mods` folder.
 4. Launch and enjoy!
 
