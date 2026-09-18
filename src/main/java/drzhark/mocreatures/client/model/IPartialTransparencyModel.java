@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.world.entity.Entity;
 
+import net.minecraft.util.Mth;
+
 /**
  * Interface for models that need partial transparency.
  * This allows models to specify which parts should be rendered with transparency
@@ -38,4 +40,16 @@ public interface IPartialTransparencyModel<T extends Entity> {
      * Checks if the model should render with partial transparency
      */
     boolean shouldRenderPartialTransparency();
+
+    /**
+     * Packs the transparency alpha and color tint into an ARGB 32-bit integer for 1.21 vertex consumer.
+     */
+    default int packPartialColor() {
+        float alpha = getTransparencyValue();
+        float[] color = getTransparencyColor();
+        return ((int) (Mth.clamp(alpha, 0.0F, 1.0F) * 255.0F) << 24)
+                | ((int) (Mth.clamp(color[0], 0.0F, 1.0F) * 255.0F) << 16)
+                | ((int) (Mth.clamp(color[1], 0.0F, 1.0F) * 255.0F) << 8)
+                | (int) (Mth.clamp(color[2], 0.0F, 1.0F) * 255.0F);
+    }
 } 

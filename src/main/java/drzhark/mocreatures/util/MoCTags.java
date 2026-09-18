@@ -16,6 +16,8 @@ public class MoCTags {
     public static class EntityTypes {
         public static final TagKey<net.minecraft.world.entity.EntityType<?>> PREDATOR_PREY = TagKey.create(
                 Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("mocreatures", "predator_prey"));
+        public static final TagKey<net.minecraft.world.entity.EntityType<?>> FOX_PREY = TagKey.create(
+                Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("mocreatures", "fox_prey"));
         public static final TagKey<net.minecraft.world.entity.EntityType<?>> NATURALIST_PREDATORS = TagKey.create(
                 Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("naturalist", "predators"));
         public static final TagKey<net.minecraft.world.entity.EntityType<?>> COMMON_ANIMALS = TagKey.create(

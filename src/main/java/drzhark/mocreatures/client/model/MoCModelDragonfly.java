@@ -1,6 +1,5 @@
 package drzhark.mocreatures.client.model;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import drzhark.mocreatures.entity.ambient.MoCEntityDragonfly;
@@ -202,16 +201,13 @@ public class MoCModelDragonfly<T extends MoCEntityDragonfly> extends EntityModel
         // Render opaque parts first
         renderOpaqueParts(poseStack, buffer, packedLight, packedOverlay, color);
         
-        // Render transparent parts with blending
-        poseStack.pushPose();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.clearColor(getTransparencyColor()[0], getTransparencyColor()[1], getTransparencyColor()[2], getTransparencyValue());
-        
-        renderTransparentParts(poseStack, buffer, packedLight, packedOverlay, color);
-        
-        RenderSystem.disableBlend();
-        poseStack.popPose();
+        // Render transparent parts with tint
+        if (shouldRenderPartialTransparency()) {
+            int partialTint = packPartialColor();
+            renderTransparentParts(poseStack, buffer, packedLight, packedOverlay, partialTint);
+        } else {
+            renderTransparentParts(poseStack, buffer, packedLight, packedOverlay, color);
+        }
     }
     
     @Override

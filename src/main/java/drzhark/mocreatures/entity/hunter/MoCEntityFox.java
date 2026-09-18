@@ -10,6 +10,7 @@ import drzhark.mocreatures.entity.tameable.MoCEntityTameableAnimal;
 import drzhark.mocreatures.init.MoCItems;
 import drzhark.mocreatures.init.MoCLootTables;
 import drzhark.mocreatures.init.MoCSoundEvents;
+import drzhark.mocreatures.util.MoCTags;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -62,8 +63,8 @@ public class MoCEntityFox extends MoCEntityTameableAnimal implements drzhark.moc
         this.goalSelector.addGoal(6, new EntityAIWanderMoC2(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, net.minecraft.world.entity.animal.Animal.class, 10, true, false,
-                target -> target instanceof drzhark.mocreatures.entity.passive.MoCEntityBunny || target instanceof drzhark.mocreatures.entity.passive.MoCEntityDuck || target instanceof drzhark.mocreatures.entity.passive.MoCEntityBird || target instanceof drzhark.mocreatures.entity.passive.MoCEntityMouse || target instanceof net.minecraft.world.entity.animal.Rabbit || target instanceof net.minecraft.world.entity.animal.Chicken));
+        this.targetSelector.addGoal(2, new EntityAIHunt<>(this, LivingEntity.class, 10, true, false,
+                target -> target.getType().is(MoCTags.EntityTypes.FOX_PREY)));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

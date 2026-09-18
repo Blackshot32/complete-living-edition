@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -419,5 +420,10 @@ public class MoCEntityCrocodile extends MoCEntityTameableAnimal implements drzha
     }
     protected float getStandingEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return sizeIn.height() * 0.8F;
+    }
+
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        return this.getBoundingBox().inflate(1.5D, 0.5D, 1.5D);
     }
 }

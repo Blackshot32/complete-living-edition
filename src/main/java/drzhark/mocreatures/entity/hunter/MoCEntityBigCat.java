@@ -8,6 +8,7 @@ import drzhark.mocreatures.MoCreatures;
 import drzhark.mocreatures.entity.ai.EntityAIFollowAdult;
 import drzhark.mocreatures.entity.ai.EntityAIFollowOwnerPlayer;
 import drzhark.mocreatures.entity.ai.EntityAIHunt;
+import drzhark.mocreatures.entity.ai.EntityAIStalkAndPounce;
 import drzhark.mocreatures.entity.ai.EntityAIWanderMoC2;
 import drzhark.mocreatures.entity.inventory.MoCAnimalChest;
 import drzhark.mocreatures.entity.tameable.IMoCTameable;
@@ -18,6 +19,7 @@ import drzhark.mocreatures.init.MoCSoundEvents;
 import drzhark.mocreatures.network.MoCMessageHandler;
 import drzhark.mocreatures.network.message.MoCMessageAnimation;
 import drzhark.mocreatures.util.MoCTags;
+import net.minecraft.world.phys.AABB;
 
 // Updated imports for 1.20.1
 import net.minecraft.world.level.block.Block;
@@ -95,7 +97,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal implements HuntingA
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.0D, false));
+        this.goalSelector.addGoal(1, new EntityAIStalkAndPounce(this));
         this.goalSelector.addGoal(4, new EntityAIFollowAdult(this, 1.0D));
         this.goalSelector.addGoal(5, new EntityAIFollowOwnerPlayer(this, 1D, 2F, 10F));
         this.goalSelector.addGoal(2, new EntityAIWanderMoC2(this, 0.8D, 30));
@@ -586,7 +588,7 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal implements HuntingA
         return false;
     }
 
-    private void openMouth() {
+    public void openMouth() {
         this.mouthCounter = 1;
     }
 
@@ -686,6 +688,11 @@ public class MoCEntityBigCat extends MoCEntityTameableAnimal implements HuntingA
     protected boolean canBeTrappedInNet() {
         // Ghost variants must stay in Ghost Amulets
         return !this.getIsGhost() && super.canBeTrappedInNet();
+    }
+
+    @Override
+    public AABB getBoundingBoxForCulling() {
+        return this.getBoundingBox().inflate(1.0D, 0.5D, 1.0D);
     }
 }
 

@@ -67,8 +67,7 @@ public class EntityAIFollowOwnerPlayer extends Goal {
 
         if (entityplayer == null) {
             return false;
-        } else if (this.thePet.distanceToSqr(entityplayer) < this.minDist * this.minDist
-                || this.thePet.distanceToSqr(entityplayer) > this.maxDist * this.maxDist) {
+        } else if (this.thePet.distanceToSqr(entityplayer) < this.minDist * this.minDist) {
             return false;
         } else {
             this.theOwner = entityplayer;
@@ -81,7 +80,9 @@ public class EntityAIFollowOwnerPlayer extends Goal {
      */
     @Override
     public boolean canContinueToUse() {
-        return !this.petPathfinder.isDone() && this.thePet.distanceToSqr(this.theOwner) > this.maxDist * this.maxDist
+        return this.theOwner != null
+                && !this.petPathfinder.isDone()
+                && this.thePet.distanceToSqr(this.theOwner) > this.minDist * this.minDist
                 && !((IMoCEntity) this.thePet).getIsSitting();
     }
 
